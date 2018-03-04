@@ -10,5 +10,15 @@ namespace ECS_Engine
     {
         public int ScoreValue { get; protected set; } = 0;
 
+        public void IncreaseScore(int value)
+        {
+            ScoreValue += value;
+        }
+
+        public void SetScore(int value)
+        {
+            ScoreValue = value;
+        }
+
     }
 }

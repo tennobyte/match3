@@ -18,7 +18,7 @@ namespace ECS_Engine
 
         public override void Update(GameTime gameTime)
         {
-            foreach (GameObject go in Scene.GetAllChildren().Where(e => e.HasComponents(CompatibleTypes)))
+            foreach (Entity go in Scene.Entities.Where(e => e.HasExactComponents(CompatibleTypes)))
             {
                 if (go.IsActive)
                 {
@@ -41,7 +41,7 @@ namespace ECS_Engine
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            foreach (GameObject go in Scene.GetAllChildren().Where(e => e.HasComponents(CompatibleTypes)))
+            foreach (Entity go in Scene.Entities.Where(e => e.HasExactComponents(CompatibleTypes)))
             {
                 if (go.IsActive)
                 {
@@ -49,8 +49,8 @@ namespace ECS_Engine
                     TextRenderer textRenderer = go.GetComponent<TextRenderer>();
                     Timer timer = go.GetComponent<Timer>();
 
-                    string textToDraw = textRenderer.Text + timer.GetTimeLeft().ToString();
-                    spriteBatch.DrawString(textRenderer.SpriteFont, textToDraw, transform.Position, Color.White);
+                    string textToDraw = textRenderer.Text + timer.GetSecondsLeft().ToString();
+                    spriteBatch.DrawString(textRenderer.SpriteFont, textToDraw, transform.Position, Color.White,transform.Rotation,new Vector2(),transform.Scale,SpriteEffects.None,textRenderer.LayerDepth);
                 }
             }
         }

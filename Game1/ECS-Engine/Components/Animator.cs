@@ -9,25 +9,25 @@ namespace ECS_Engine
 {
     class Animator : Component
     {
-        public float MoveSpeed { get; set; }
-        public float SpinSpeed { get; set; }
+        public float MoveSpeed { get; set; } = 300f;
+        public float SpinSpeed { get; set; } = 20f;
         public Vector2 TargetPosition { get; private set; }
-        public bool IsMoving { get; private set; }
-        public bool IsSpinning { get; private set; }
+        public bool IsMoving { get; private set; } = false;
+        public bool IsRotating { get; private set; } = false;
 
-        public void EnableMoving(bool isEnabled)
+        public void ToggleMoving()
         {
-            IsMoving = isEnabled;
+            IsMoving = !IsMoving;
         }
 
-        public void EnableSpinning(bool isEnabled)
+        public void ToggleRotating()
         {
-            IsSpinning = isEnabled;
+            IsRotating = !IsRotating;
         }
 
         public void SetTargetPosition(Vector2 target)
         {
-
+            TargetPosition = target;
         }
     }
 }

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ECS_Engine
 {
-    abstract class Component: IComponent
+    class SceneFactory
     {
-        public Entity Entity { get; set; }
+
     }
 }

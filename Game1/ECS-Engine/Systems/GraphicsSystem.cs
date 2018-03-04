@@ -18,7 +18,7 @@ namespace ECS_Engine
 
         public override void Draw (SpriteBatch spriteBatch)
         {
-            foreach (GameObject go in Scene.GetAllChildren().Where(e => e.HasComponents(CompatibleTypes)))
+            foreach (Entity go in Scene.Entities.Where(e => e.HasComponents(CompatibleTypes)))
             {
                 if (go.IsActive)
                 {
@@ -28,7 +28,20 @@ namespace ECS_Engine
                     if (!sprite.IsTilable)
                     {
                         spriteBatch.Draw(sprite.Texture, transform.Position, null, Color.White,
-                            transform.Rotation, anchor, transform.Scale, SpriteEffects.None, 0f);
+                            transform.Rotation, anchor, transform.Scale, sprite.SpriteEffects, sprite.LayerDepth);
+                    }
+                    else
+                    {
+                        for(int i = 0; i< sprite.VerticalRepeat; i++)
+                        {
+                            for (int j = 0; j < sprite.HorizontalRepeat; j++)
+                            {
+                                int spacing = sprite.Spacing;
+                                Vector2 newPosition = new Vector2(transform.Position.X + spacing * i, transform.Position.Y + spacing * j);
+                                spriteBatch.Draw(sprite.Texture, newPosition, null, Color.White,
+                                    transform.Rotation, anchor, transform.Scale, sprite.SpriteEffects, sprite.LayerDepth);
+                            }
+                        }
                     }
                 }
             }

@@ -29,9 +29,21 @@ namespace ECS_Engine
             Instance = this;
         }
 
+        public void Init()
+        {
+            if (currentSceneNumber >= 0)
+            {
+                foreach (System system in GameScenes[currentSceneNumber].Systems)
+                {
+
+                    system.Init();
+                }
+            }
+        }
+
         public void UpdateSystems(GameTime gameTime)
         {
-            Console.WriteLine("ECS: " + (float)gameTime.ElapsedGameTime.TotalSeconds);
+            //Console.WriteLine("ECS: " + (float)gameTime.ElapsedGameTime.TotalSeconds);
             if (currentSceneNumber >= 0)
             {
                 foreach (System system in GameScenes[currentSceneNumber].Systems)
@@ -51,6 +63,11 @@ namespace ECS_Engine
                     system.Draw(spriteBatch);
                 }
             }
+        }
+
+        public Scene GetCurrentScene()
+        {
+            return GameScenes[currentSceneNumber];
         }
 
         public void AddScene(Scene scene)
@@ -135,7 +152,7 @@ namespace ECS_Engine
 
         public void Test()
         {
-            GameObject myEntity = new GameObject("boop");
+            Entity myEntity = new Entity("boop");
             myEntity.AddComponent(new Transform());
             myEntity.AddComponents(new Transform(), new SpriteRenderer());
 

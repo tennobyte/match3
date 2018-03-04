@@ -42,20 +42,26 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ECS-Engine\Components\Animator.cs" />
+    <Compile Include="ECS-Engine\Components\Button.cs" />
+    <Compile Include="ECS-Engine\Components\Collider.cs" />
     <Compile Include="ECS-Engine\Components\Component.cs" />
+    <Compile Include="ECS-Engine\Components\Gameboard.cs" />
+    <Compile Include="ECS-Engine\Components\GameboardElement.cs" />
     <Compile Include="ECS-Engine\Components\IComponent.cs" />
     <Compile Include="ECS-Engine\Components\Score.cs" />
     <Compile Include="ECS-Engine\Components\SpriteRenderer.cs" />
     <Compile Include="ECS-Engine\Components\TextRenderer.cs" />
     <Compile Include="ECS-Engine\Components\Timer.cs" />
     <Compile Include="ECS-Engine\Components\Transform.cs" />
+    <Compile Include="ECS-Engine\ContentHolder.cs" />
     <Compile Include="ECS-Engine\ECS.cs" />
     <Compile Include="ECS-Engine\Entities\Entity.cs" />
-    <Compile Include="ECS-Engine\Entities\GameObject.cs" />
     <Compile Include="ECS-Engine\Entities\IEntity.cs" />
-    <Compile Include="ECS-Engine\Entities\Scene.cs" />
+    <Compile Include="ECS-Engine\Scene.cs" />
+    <Compile Include="ECS-Engine\SceneFactory.cs" />
     <Compile Include="ECS-Engine\Systems\AnimationSystem.cs" />
-    <Compile Include="ECS-Engine\Systems\GameBoardSystem.cs" />
+    <Compile Include="ECS-Engine\Systems\ButtonSystem.cs" />
+    <Compile Include="ECS-Engine\Systems\GameboardSystem.cs" />
     <Compile Include="ECS-Engine\Systems\GraphicsSystem.cs" />
     <Compile Include="ECS-Engine\Systems\ISystem.cs" />
     <Compile Include="ECS-Engine\Systems\ScoreSystem.cs" />

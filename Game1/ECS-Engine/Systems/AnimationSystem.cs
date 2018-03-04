@@ -17,7 +17,7 @@ namespace ECS_Engine
 
         public override void Update(GameTime gameTime)
         {
-            foreach(GameObject go in Scene.GetAllChildren().Where(e => e.HasComponents(CompatibleTypes)))
+            foreach(Entity go in Scene.Entities.Where(e => e.HasComponents(CompatibleTypes)))
             {
                 if (go.IsActive)
                 {
@@ -26,14 +26,23 @@ namespace ECS_Engine
                     if (animator.IsMoving)
                     {
                         Vector2 moveDirection = animator.TargetPosition - transform.Position;
-                        moveDirection.Normalize();
-                        moveDirection *= animator.MoveSpeed;
-                        transform.Move(moveDirection);
+                        //Console.WriteLine(moveDirection);
+                        if (moveDirection.Length() <= animator.MoveSpeed/100 + 1)
+                        {
+                            animator.ToggleMoving();
+                            transform.SetPosition(animator.TargetPosition);
+                        }
+                        else
+                        {
+                            moveDirection.Normalize();
+                            moveDirection *= animator.MoveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                            transform.Move(moveDirection);
+                        }
                     }
 
-                    if (animator.IsSpinning)
+                    if (animator.IsRotating)
                     {
-                        transform.Rotate(animator.SpinSpeed);
+                        transform.Rotate((float)gameTime.ElapsedGameTime.TotalSeconds * animator.SpinSpeed);
                     }
                     else
                     {

@@ -9,9 +9,9 @@ namespace ECS_Engine
 {
     class Transform : Component
     {
-        public Vector2 Position { get; private set; }
-        public float Scale { get; private set; }
-        public float Rotation { get; private set; }
+        public Vector2 Position { get;  set; }
+        public float Scale { get;  set; }
+        public float Rotation { get;  set; }
 
         public Transform()
         {

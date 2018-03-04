@@ -7,7 +7,7 @@ namespace ECS_Engine
 {
     abstract class System: ISystem
     {
-        public List<Entity> CompatibleEntities { get; set; }
+        //public List<Entity> CompatibleEntities { get; set; }
         protected List<Type> CompatibleTypes { get; private set; }
         public Scene Scene { get; set; }
 
@@ -15,8 +15,11 @@ namespace ECS_Engine
         {
             CompatibleTypes = new List<Type>();
             CompatibleTypes.AddRange(types);
-            //Scene = scene;
-            //Scene.Systems.Add(this);
+        }
+
+        public virtual void Init()
+        {
+
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)

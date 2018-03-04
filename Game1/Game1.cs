@@ -12,12 +12,14 @@ namespace Game1
         SpriteBatch spriteBatch;
         ECS ecsEngine;
 
-        float time = 60f;
+        //float time = 60f;
 
         public Game1()
         {
             IsMouseVisible = true;
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferHeight = 512;
+            graphics.PreferredBackBufferWidth = 608;
             Content.RootDirectory = "Content";
         }
 
@@ -27,12 +29,33 @@ namespace Game1
             Console.WriteLine(new Transform().GetType());
             ecsEngine = new ECS();
             //Content.Load<SpriteFont>("arialFont");
-            Scene gameScene = new Scene("GameScene");
-            GameObject timer = new GameObject("Timer");
-            timer.AddComponents(new Transform(), new TextRenderer("Time left: ", Content.Load<SpriteFont>("arialFont")), new Timer(60));
-            gameScene.AddChild(timer);
+            Scene gameScene = new Scene("gamescene");
+
+            Entity timer = new Entity("timer");
+            timer.AddComponents(new Transform(new Vector2(5,20)), new TextRenderer("Time left: ", Content.Load<SpriteFont>("arialFont"), 0f), new Timer(60));
+            gameScene.AddEntity(timer);
             gameScene.AddSystem(new TimerSystem());
+
+            Entity score = new Entity("score");
+            score.AddComponents(new Transform(new Vector2(5,60)), new TextRenderer("Score: ", Content.Load<SpriteFont>("arialFont"), 0f), new Score());
+            gameScene.AddEntity(score);
+            gameScene.AddSystem(new ScoreSystem());
+
+            Entity gameBoardTile = new Entity("tile");
+            Texture2D tileTexture = Content.Load<Texture2D>("Tile");
+            gameBoardTile.AddComponents(new Transform(new Vector2(128,32),0.5f,0), new SpriteRenderer(tileTexture, tileTexture.Width/2,8,8,0.1f));
+            gameScene.AddEntity(gameBoardTile);
+            gameScene.AddSystem(new GraphicsSystem());
+
+            Entity gameboard = new Entity("gameboard");
+            gameboard.AddComponents(new Transform(new Vector2(128, 32)), new Gameboard(8,8,tileTexture.Width / 2));
+            gameScene.AddEntity(gameboard);
+            gameScene.AddSystem(new GameboardSystem());
+            gameScene.AddSystem(new AnimationSystem());
+
             ecsEngine.AddScene(gameScene);
+
+            //ecsEngine.Init();
 
             base.Initialize();
         }
@@ -40,6 +63,8 @@ namespace Game1
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            ContentHolder.Init(Content);
+            ecsEngine.Init();
         }
 
         protected override void UnloadContent()
@@ -56,8 +81,8 @@ namespace Game1
 
             ecsEngine.UpdateSystems(gameTime);
 
-            time -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-            Console.WriteLine("MainUpdate: " + (float)gameTime.ElapsedGameTime.TotalSeconds);
+            //time -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            //Console.WriteLine("MainUpdate: " + (float)gameTime.ElapsedGameTime.TotalSeconds);
 
             base.Update(gameTime);
         }
@@ -68,7 +93,7 @@ namespace Game1
 
             // TODO: Add your drawing code here
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.BackToFront, null);
             ecsEngine.DrawSystems(spriteBatch);
             spriteBatch.End();
 

@@ -22,7 +22,7 @@ namespace ECS_Engine
             TimeLeft = timeToSet;
         }
 
-        public int GetTimeLeft()
+        public int GetSecondsLeft()
         {
             return (int)Math.Round(TimeLeft);
         }
