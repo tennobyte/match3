@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace ECS_Engine
     {
         public Texture2D Texture { get; set; } 
         public SpriteEffects SpriteEffects { get; set; } = SpriteEffects.None;
+        public int AlphaValue { get; private set; } = 255;
         public bool IsTilable { get; set; } = false;
         public int Spacing { get; set; } = 0;
         public int VerticalRepeat { get; set; } = 0;
@@ -50,6 +52,16 @@ namespace ECS_Engine
             VerticalRepeat = verticalRepeat;
             HorizontalRepeat = horizontalRepeat;
             LayerDepth = layerDepth;
+        }
+
+        public void DecreaseAlpha(float value)
+        {
+            AlphaValue = MathHelper.Clamp((int)(AlphaValue - value), 0, 255);
+        }
+
+        public void ResetAlpha()
+        {
+            AlphaValue = 255;
         }
     }
 }

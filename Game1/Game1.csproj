@@ -61,6 +61,7 @@
     <Compile Include="ECS-Engine\SceneFactory.cs" />
     <Compile Include="ECS-Engine\Systems\AnimationSystem.cs" />
     <Compile Include="ECS-Engine\Systems\ButtonSystem.cs" />
+    <Compile Include="ECS-Engine\Systems\ControlSystem.cs" />
     <Compile Include="ECS-Engine\Systems\GameboardSystem.cs" />
     <Compile Include="ECS-Engine\Systems\GraphicsSystem.cs" />
     <Compile Include="ECS-Engine\Systems\ISystem.cs" />

@@ -25,33 +25,25 @@ namespace Game1
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-            Console.WriteLine(new Transform().GetType());
             ecsEngine = new ECS();
-            //Content.Load<SpriteFont>("arialFont");
             Scene gameScene = new Scene("gamescene");
-
-            Entity timer = new Entity("timer");
-            timer.AddComponents(new Transform(new Vector2(5,20)), new TextRenderer("Time left: ", Content.Load<SpriteFont>("arialFont"), 0f), new Timer(60));
-            gameScene.AddEntity(timer);
             gameScene.AddSystem(new TimerSystem());
-
-            Entity score = new Entity("score");
-            score.AddComponents(new Transform(new Vector2(5,60)), new TextRenderer("Score: ", Content.Load<SpriteFont>("arialFont"), 0f), new Score());
-            gameScene.AddEntity(score);
             gameScene.AddSystem(new ScoreSystem());
-
-            Entity gameBoardTile = new Entity("tile");
-            Texture2D tileTexture = Content.Load<Texture2D>("Tile");
-            gameBoardTile.AddComponents(new Transform(new Vector2(128,32),0.5f,0), new SpriteRenderer(tileTexture, tileTexture.Width/2,8,8,0.1f));
-            gameScene.AddEntity(gameBoardTile);
+            gameScene.AddSystem(new GameboardSystem());
+            gameScene.AddSystem(new AnimationSystem());
+            gameScene.AddSystem(new ControlSystem());
             gameScene.AddSystem(new GraphicsSystem());
 
             Entity gameboard = new Entity("gameboard");
-            gameboard.AddComponents(new Transform(new Vector2(128, 32)), new Gameboard(8,8,tileTexture.Width / 2));
+            gameboard.AddComponents(new Transform(new Vector2(128, 32)), new Gameboard(8,8,128));
             gameScene.AddEntity(gameboard);
-            gameScene.AddSystem(new GameboardSystem());
-            gameScene.AddSystem(new AnimationSystem());
+
+
+            Entity playButton = new Entity("playbutton");
+            playButton.AddComponents(new Transform(),
+                new Button(),
+                new SpriteRenderer(),
+                new Collider());
 
             ecsEngine.AddScene(gameScene);
 

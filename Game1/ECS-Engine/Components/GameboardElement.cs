@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ECS_Engine
 {
-    public enum Gems: int
+    public enum Gem: int
     {
         Ruby,
         Emerald,
@@ -18,8 +18,8 @@ namespace ECS_Engine
 
     class GameboardElement: Component
     {
-        public bool IsClicked { get; set; } = false;
-        public Gems GemType { get; set; }
+        
+        public Gem GemType { get; set; }
         public Point BoardPosition { get; set; } = new Point();
 
         public GameboardElement()
@@ -27,7 +27,7 @@ namespace ECS_Engine
 
         }
 
-        public GameboardElement(Gems gemType)
+        public GameboardElement(Gem gemType)
         {
             GemType = gemType;
         }
@@ -37,7 +37,7 @@ namespace ECS_Engine
             BoardPosition = point;
         }
 
-        public GameboardElement(Gems gemType, Point point)
+        public GameboardElement(Gem gemType, Point point)
         {
             GemType = gemType;
             BoardPosition = point;

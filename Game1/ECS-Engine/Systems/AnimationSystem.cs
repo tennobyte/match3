@@ -10,7 +10,7 @@ namespace ECS_Engine
     class AnimationSystem: System
     {
         public AnimationSystem()
-            : base(typeof(Transform), typeof(Animator))
+            : base(typeof(Transform), typeof(Animator), typeof(SpriteRenderer), typeof(Collider))
         {
 
         }
@@ -23,6 +23,8 @@ namespace ECS_Engine
                 {
                     Transform transform = go.GetComponent<Transform>();
                     Animator animator = go.GetComponent<Animator>();
+                    SpriteRenderer spriteRenderer = go.GetComponent<SpriteRenderer>();
+                    Collider collider = go.GetComponent<Collider>();
                     if (animator.IsMoving)
                     {
                         Vector2 moveDirection = animator.TargetPosition - transform.Position;
@@ -31,12 +33,24 @@ namespace ECS_Engine
                         {
                             animator.ToggleMoving();
                             transform.SetPosition(animator.TargetPosition);
+                            collider.RefreshPosition((int)(transform.Position.X - spriteRenderer.Texture.Width/2 * transform.Scale),
+                                (int)(transform.Position.Y - spriteRenderer.Texture.Height / 2 * transform.Scale));
                         }
                         else
                         {
                             moveDirection.Normalize();
                             moveDirection *= animator.MoveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
                             transform.Move(moveDirection);
+                        }
+                    }
+
+                    if (animator.IsFading)
+                    {
+                        spriteRenderer.DecreaseAlpha((float)gameTime.ElapsedGameTime.TotalSeconds * animator.FadeSpeed);
+                        if (spriteRenderer.AlphaValue < 1)
+                        {
+                            animator.ToggleFading();
+                            spriteRenderer.ResetAlpha();
                         }
                     }
 

@@ -27,7 +27,7 @@ namespace ECS_Engine
                     Vector2 anchor = new Vector2(sprite.Texture.Width / 2, sprite.Texture.Height / 2);
                     if (!sprite.IsTilable)
                     {
-                        spriteBatch.Draw(sprite.Texture, transform.Position, null, Color.White,
+                        spriteBatch.Draw(sprite.Texture, transform.Position, null, new Color(255, 255, 255, MathHelper.Clamp(sprite.AlphaValue, 0, 255)),
                             transform.Rotation, anchor, transform.Scale, sprite.SpriteEffects, sprite.LayerDepth);
                     }
                     else
@@ -38,7 +38,7 @@ namespace ECS_Engine
                             {
                                 int spacing = sprite.Spacing;
                                 Vector2 newPosition = new Vector2(transform.Position.X + spacing * i, transform.Position.Y + spacing * j);
-                                spriteBatch.Draw(sprite.Texture, newPosition, null, Color.White,
+                                spriteBatch.Draw(sprite.Texture, newPosition, null, new Color(255,255,255, MathHelper.Clamp(sprite.AlphaValue,0,255)),
                                     transform.Rotation, anchor, transform.Scale, sprite.SpriteEffects, sprite.LayerDepth);
                             }
                         }
