@@ -27,9 +27,19 @@ namespace ECS_Engine
                     Button button = go.GetComponent<Button>();
                     Collider collider = go.GetComponent<Collider>();
 
-                    if (false)
+                    if (collider.IsHovered)
                     {
-                        //если стрелка мыши на кнопке, то подсвечиваем кнопку при помощи spriteEffects
+                        spriteRenderer.SetAlpha(150);
+                    }
+                    else
+                    {
+                        spriteRenderer.ResetAlpha();
+                    }
+                    if (collider.IsClicked)
+                    {
+                        spriteRenderer.ResetAlpha();
+                        Console.WriteLine(button.SceneToOpen);
+                        ECS.Instance.SetScene(button.SceneToOpen);
                     }
                 }
             }

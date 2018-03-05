@@ -10,18 +10,23 @@ namespace ECS_Engine
 {
     class TextRenderer : Component
     {
-        public string Text { get; set; }
+        public string Text { get; set; } = "";
         public SpriteFont SpriteFont { get; protected set; }
         public float LayerDepth { get; set; } = 0f;
 
         public TextRenderer()
         {
-            Text = "";
+
         }
 
         public TextRenderer(string text, SpriteFont font)
         {
             Text = text;
+            SpriteFont = font;
+        }
+
+        public TextRenderer(SpriteFont font)
+        {
             SpriteFont = font;
         }
 

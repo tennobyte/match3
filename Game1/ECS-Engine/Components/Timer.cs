@@ -8,8 +8,8 @@ namespace ECS_Engine
 {
     class Timer : Component
     {
-        public float MaxTime { get; protected set; }
-        public float TimeLeft { get; protected set; }
+        public float MaxTime { get; protected set; } = 60f;
+        public float TimeLeft { get; protected set; } = 60f;
 
         public Timer()
         {

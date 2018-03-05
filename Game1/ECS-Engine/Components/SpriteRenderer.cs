@@ -63,5 +63,10 @@ namespace ECS_Engine
         {
             AlphaValue = 255;
         }
+
+        public void SetAlpha(int value)
+        {
+            AlphaValue = MathHelper.Clamp(value, 0, 255);
+        }
     }
 }

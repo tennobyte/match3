@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ECS_Engine
 {
 
-    class Entity : IEntity
+    public class Entity : IEntity
     {
         public string Id { get; private set; }
         public bool IsActive { get; private set; }

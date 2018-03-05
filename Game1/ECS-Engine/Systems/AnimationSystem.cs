@@ -50,7 +50,7 @@ namespace ECS_Engine
                         if (spriteRenderer.AlphaValue < 1)
                         {
                             animator.ToggleFading();
-                            spriteRenderer.ResetAlpha();
+                            //spriteRenderer.ResetAlpha();
                         }
                     }
 

@@ -10,7 +10,8 @@ namespace ECS_Engine
 {
     class ControlSystem : System
     {
-        MouseState prevousState;
+        private MouseState prevousState;
+        private float controlTimeOut = 0.1f;
 
         public ControlSystem()
             : base(typeof(Transform), typeof(Collider))
@@ -26,27 +27,32 @@ namespace ECS_Engine
         public override void Update(GameTime gameTime)
         {
             var state = Mouse.GetState();
-            
-            foreach (Entity go in Scene.Entities.Where(e => e.HasComponents(CompatibleTypes)).Where(e => e.GetComponent<Collider>().IsActive))
+            if(controlTimeOut <= 0)
             {
-                var collider = go.GetComponent<Collider>();
-                var mousePoint = new Point(state.X, state.Y);
-                if (collider.Rectangle.Contains(mousePoint))
+                foreach (Entity go in Scene.Entities.Where(e => e.HasComponents(CompatibleTypes)).Where(e => e.GetComponent<Collider>().IsActive))
                 {
-                    //Console.WriteLine("hovered over " + go.Id);
-                    collider.IsHovered = true;
-                    if (state.LeftButton == ButtonState.Pressed && prevousState.LeftButton != ButtonState.Pressed)
+                    var collider = go.GetComponent<Collider>();
+                    var mousePoint = new Point(state.X, state.Y);
+                    if (collider.Rectangle.Contains(mousePoint))
                     {
-                        collider.IsClicked = true;
-                        Console.WriteLine("clicked on " + go.Id);
+                        collider.IsHovered = true;
+                        if (state.LeftButton == ButtonState.Pressed && prevousState.LeftButton != ButtonState.Pressed)
+                        {
+                            collider.IsClicked = true;
+                            Console.WriteLine("clicked on " + go.Id);
+                        }
+                    }
+                    else
+                    {
+                        collider.ResetStatus();
                     }
                 }
-                else
-                {
-                    collider.ResetStatus();
-                }
+                prevousState = state;
             }
-            prevousState = state;
+            else
+            {
+                controlTimeOut -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
         }
     }
 }

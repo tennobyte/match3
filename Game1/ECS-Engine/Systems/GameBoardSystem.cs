@@ -33,7 +33,8 @@ namespace ECS_Engine
             CheckingMatches,
             Fading,
             Respawning,
-            GameOver
+            GameOver,
+            WaitingForExit
         }
 
         public GameboardSystem()
@@ -55,45 +56,20 @@ namespace ECS_Engine
 
             isSwapping = false;
 
-
             random = new Random();
             gems = new Entity[horizontalElementsCount, verticalElementsCount];
-            Scene currentScene = ECS.Instance.GetCurrentScene();
 
-            //initialising gems
-            for (int y = 0; y < verticalElementsCount; y++)
-            {
-                for (int x = 0; x < horizontalElementsCount; x++)
-                {
-                    Entity gem = new Entity("gem:" + y + "_" + x);
-                    gem.AddComponents(new Transform(new Vector2((int)initialPosition.X + x * spacing/2,
-                                                    (int)initialPosition.Y +  y * spacing/2), 0.4f, 0), 
-                        new GameboardElement(new Point (x,y)), 
-                        new SpriteRenderer(),
-                        new Animator(),
-                        new Collider());
-                    ChangeGemTypeRandomly(gem);
-                    gem.GetComponent<Collider>().Rectangle = new Rectangle((int)(initialPosition.X + x * spacing / 2 - gem.GetComponent<SpriteRenderer>().Texture.Width / 2 * gem.GetComponent<Transform>().Scale),
-                                                                            (int)(initialPosition.Y + y * spacing / 2 - gem.GetComponent<SpriteRenderer>().Texture.Height / 2 * gem.GetComponent<Transform>().Scale),
-                                                                             spacing/2, spacing/2);
-                    ECS.Instance.GetCurrentScene().AddEntity(gem);
-                    gameboardEntity.AddChild(gem);
-                    gems[x, y] = gem;
-                }
-            }
+            //initialising stuff
+            GemsInitialize();
 
-            Entity gameBoardTile = new Entity("tile");
-            Texture2D tileTexture = ContentHolder.boardTile;
-            gameBoardTile.AddComponents(new Transform(new Vector2(initialPosition.X, initialPosition.Y), 0.5f, 0), 
-                new SpriteRenderer(tileTexture, tileTexture.Width / 2, 8, 8, 0.1f));
+            Entity gameBoardTile = EntityFactory.Create(EntityType.Tile, new Vector2(initialPosition.X, initialPosition.Y));
+            gameBoardTile.GetComponent<Transform>().SetScale(0.5f);
             Scene.AddEntity(gameBoardTile);
 
-            score = new Entity("score");
-            score.AddComponents(new Transform(new Vector2(5, 60)), new TextRenderer("Score: ", ContentHolder.font, 0f), new Score());
+            score = EntityFactory.Create(EntityType.Score, new Vector2(5, 60));
             Scene.AddEntity(score);
 
-            timer = new Entity("timer");
-            timer.AddComponents(new Transform(new Vector2(5, 20)), new TextRenderer("Time left: ", ContentHolder.font, 0f), new Timer(60));
+            timer = EntityFactory.Create(EntityType.Timer, new Vector2(5, 20));
             Scene.AddEntity(timer);
         }
 
@@ -170,7 +146,11 @@ namespace ECS_Engine
                     gameState = GameState.CheckingUnavaliable;
                     break;
                 case GameState.GameOver:
-                    
+                    ShowGameOver();
+                    gameState = GameState.WaitingForExit;
+                    break;
+                case GameState.WaitingForExit:
+
                     break;
                 default:
                     gameState = GameState.CheckingUnavaliable;
@@ -214,6 +194,23 @@ namespace ECS_Engine
                     gems[x, y].GetComponent<Collider>().IsActive = false;
                 }
             }
+        }
+
+        private void ShowGameOver()
+        {
+            Vector2 position = new Vector2(Game1.Game1.graphics.PreferredBackBufferWidth / 2, Game1.Game1.graphics.PreferredBackBufferHeight / 2);
+            var background = EntityFactory.Create(EntityType.Background, position);
+            var button = EntityFactory.Create(EntityType.Button, position);
+            button.GetComponent<Transform>().Move(new Vector2(0, 40));
+            button.GetComponent<Button>().SceneToOpen = SceneType.Menu;
+            button.GetComponent<SpriteRenderer>().Texture = ContentHolder.okButton;
+            var collider = button.GetComponent<Collider>();
+            collider.IsActive = true;
+            collider.Rectangle = new Rectangle(position.ToPoint().X - ContentHolder.okButton.Width / 2,
+                                                position.ToPoint().Y - ContentHolder.okButton.Width / 2,
+                                                ContentHolder.okButton.Width, ContentHolder.okButton.Height);
+            Scene.AddEntity(background);
+            Scene.AddEntity(button);
         }
 
         private bool IsNeighbours(Entity firstElement, Entity secondElement)
@@ -306,9 +303,18 @@ namespace ECS_Engine
             }
         }
 
+        private void ResetElementsAlphas(List<Entity> elements)
+        {
+            foreach (Entity element in elements)
+            {
+                element.GetComponent<SpriteRenderer>().ResetAlpha();
+            }
+        }
+
         private void RespawnElements(List<Entity> elementsToRespawn)
         {
             score.GetComponent<Score>().IncreaseScore(elementsToRespawn.Count);
+            ResetElementsAlphas(elementsToRespawn);
             for (int i = 0; i < horizontalElementsCount; i++)
             {
                 List<Entity> columnToRespawn = elementsToRespawn.Where(e => 
@@ -409,6 +415,27 @@ namespace ECS_Engine
                 result.AddRange(entityList.GetRange(index - 1, 3));
             }
             return result.Distinct().ToList();
+        }
+
+        private void GemsInitialize()
+        {
+            for (int y = 0; y < verticalElementsCount; y++)
+            {
+                for (int x = 0; x < horizontalElementsCount; x++)
+                {
+                    Entity element = EntityFactory.Create(EntityType.Element, new Vector2((int)initialPosition.X + x * spacing / 2,
+                                                                                (int)initialPosition.Y + y * spacing / 2));
+                    element.GetComponent<Transform>().SetScale(0.4f);
+                    element.GetComponent<GameboardElement>().BoardPosition = new Point(x, y);
+                    ChangeGemTypeRandomly(element);
+                    element.GetComponent<Collider>().Rectangle = new Rectangle((int)(initialPosition.X + x * spacing / 2 - element.GetComponent<SpriteRenderer>().Texture.Width / 2 * element.GetComponent<Transform>().Scale),
+                                                                            (int)(initialPosition.Y + y * spacing / 2 - element.GetComponent<SpriteRenderer>().Texture.Height / 2 * element.GetComponent<Transform>().Scale),
+                                                                             spacing / 2, spacing / 2);
+                    Scene.AddEntity(element);
+                    gameboardEntity.AddChild(element);
+                    gems[x, y] = element;
+                }
+            }
         }
     }
 }

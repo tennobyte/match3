@@ -17,6 +17,12 @@ namespace ECS_Engine
 
         }
 
+        public Gameboard(int vCount, int hCount)
+        {
+            verticalElementsCount = vCount;
+            horizontalElementsCount = hCount;
+        }
+
         public Gameboard(int vCount, int hCount, int spacingValue)
         {
             verticalElementsCount = vCount;

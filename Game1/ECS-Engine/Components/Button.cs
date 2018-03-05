@@ -8,19 +8,16 @@ namespace ECS_Engine
 {
     class Button: Component
     {
-        public string Data { get; set; }
-        public bool IsHighlighted { get; set; }
+        public SceneType SceneToOpen { get; set; }
 
         public Button()
         {
-            IsHighlighted = false;
+
         }
 
-        public Button(string data)
+        public Button(SceneType scene)
         {
-            Data = data;
-            IsHighlighted = false;
+            SceneToOpen = scene;
         }
-
     }
 }

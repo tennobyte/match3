@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ECS_Engine
 {
-    class Scene
+    public class Scene
     {
         public List<System> Systems { get; private set; }
         public List<Entity> Entities { get; private set; }
@@ -26,11 +26,12 @@ namespace ECS_Engine
             system.Scene = this;
         }
 
-        public void AddEntity(Entity entity)
+        public Entity AddEntity(Entity entity)
         {
             Entities.Add(entity);
             entity.Scene = this;
             AddEntities(entity.GetAllChildren());
+            return entity;
         }
 
         private void AddEntities(IEnumerable<Entity> entities)
