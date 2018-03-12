@@ -9,7 +9,7 @@ namespace ECS_Engine
         {
             AddComponents(new Transform(position), 
                         new GameboardElement(),
-                        new SpriteRenderer(ContentHolder.gemTextures[0], 0.4f),
+                        new SpriteRenderer(ContentHolder.GemTextures[0], 0.4f),
                         new Animator(),
                         new Collider());
         }

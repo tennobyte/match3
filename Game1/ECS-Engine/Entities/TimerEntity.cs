@@ -8,7 +8,7 @@ namespace ECS_Engine
         : base(id)
         {
             AddComponents(new Transform(position),
-                        new TextRenderer("Time left: ", ContentHolder.font, 0f),
+                        new TextRenderer("", "Time left: ", ContentHolder.font, 0f),
                         new Timer());
         }
     }

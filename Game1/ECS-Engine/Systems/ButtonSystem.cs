@@ -1,10 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ECS_Engine
 {
@@ -18,7 +13,8 @@ namespace ECS_Engine
 
         public override void Update(GameTime gameTime)
         {
-            foreach (Entity go in Scene.Entities.Where(e => e.HasExactComponents(CompatibleTypes)))
+            var compatibleEntities = Scene.Entities.Where(e => e.HasExactComponents(CompatibleTypes));
+            foreach (Entity go in compatibleEntities)
             {
                 if (go.IsActive)
                 {
@@ -38,7 +34,6 @@ namespace ECS_Engine
                     if (collider.IsClicked)
                     {
                         spriteRenderer.ResetAlpha();
-                        Console.WriteLine(button.SceneToOpen);
                         ECS.Instance.SetScene(button.SceneToOpen);
                     }
                 }

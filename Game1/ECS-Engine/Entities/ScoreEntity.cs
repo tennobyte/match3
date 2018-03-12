@@ -8,7 +8,7 @@ namespace ECS_Engine
             : base(id)
         {
             AddComponents(new Transform(position),
-                        new TextRenderer("Score: ", ContentHolder.font, 0f),
+                        new TextRenderer("", "Score: ", ContentHolder.font, 0f),
                         new Score());
         }
     }

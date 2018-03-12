@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ECS_Engine
 {
 
-    public class Entity : IEntity
+    public abstract class Entity
     {
-        public string Id { get; private set; }
-        public bool IsActive { get; private set; }
+        public string Id { get; private set; } = Guid.NewGuid().ToString();
+        public bool IsActive { get; private set; } = true;
 
         public List<Entity> Children { get; private set; }
 
@@ -19,14 +17,15 @@ namespace ECS_Engine
 
         public Scene Scene { get; set; }
 
-        public Entity(string id)
+        public Entity()
+        {
+            Components = new List<IComponent>();
+            Children = new List<Entity>();
+        }
+
+        public Entity(string id): this()
         {
             Id = id;
-            Components = new List<IComponent>();
-            IsActive = true;
-            Children = new List<Entity>();
-            Parent = null;
-            Scene = null;
         }
 
         public Entity AddChild(Entity entity)
@@ -44,81 +43,45 @@ namespace ECS_Engine
 
         public IEnumerable<Entity> GetAllChildren()
         {
-            var childSelector = new Func<Entity, IEnumerable<Entity>>(ent => ent.Children);
-
-            var stack = new Stack<Entity>(Children);
-            while (stack.Any())
-            {
-                var next = stack.Pop();
-                yield return next;
-                foreach (var child in childSelector(next))
-                    stack.Push(child);
-            }
+            return Children.SelectMany(c => GetAllChildren());
         }
 
         public bool HasComponent(Type componentType)
         {
-            var isFound = Components.Any(c => c.GetType() == componentType);
-            if (isFound) return true;
-
-            return false;
+            return Components.Any(c => c.GetType() == componentType);
         }
 
         public bool HasComponent<T>()
             where T : IComponent
         {
-
-            var component = Components.OfType<T>().FirstOrDefault();
-
-            if (component != null) return true;
-
-            return false;
+            return Components.OfType<T>().Any();
         }
 
         public bool HasComponents(IEnumerable<Type> componentTypes)
         {
-            foreach (var ct in componentTypes)
-            {
-                if (!HasComponent(ct)) return false;
-            }
-            return true;
+            return componentTypes.All(c => HasComponent(c));
         }
 
         public bool HasExactComponents(IEnumerable<Type> componentTypes)
         {
-            if (Components.Count != componentTypes.Count())
-            {
-                return false;
-            }
-            return HasComponents(componentTypes);
+            return Components.Count == componentTypes.Count() && 
+                componentTypes.All(c => HasComponent(c));
         }
 
         public IComponent GetComponent(Type componentType)
         {
-            var match = Components.FirstOrDefault(c => c.GetType() == componentType);
-            if (match != null)
-            {
-                return match;
-            }
-
-            return null;
+            return Components.FirstOrDefault(c => c.GetType() == componentType);
         }
 
         public T GetComponent<T>()
             where T : IComponent
         {
-
-            var match = Components.OfType<T>().FirstOrDefault();
-
-            if (match != null) return match;
-
-            return default(T);
+            return Components.OfType<T>().FirstOrDefault();
         }
 
         public IComponent AddComponent(IComponent component)
         {
             Components.Add(component);
-
             return component;
         }
 
@@ -138,23 +101,15 @@ namespace ECS_Engine
             }
         }
 
-        public void RemoveComponent(Type componentType)
+        public bool RemoveComponent(Type componentType)
         {
-            IComponent componentToRemove = GetComponent(componentType);
-            if (componentToRemove != null)
-            {
-                Components.Remove(componentToRemove);
-            }
+            return Components.Remove(GetComponent(componentType));
         }
 
-        public void RemoveComponent<T>()
+        public bool RemoveComponent<T>()
              where T : IComponent
         {
-            IComponent componentToRemove = GetComponent<T>();
-            if (componentToRemove != null)
-            {
-                Components.Remove(componentToRemove);
-            }
+            return Components.Remove(GetComponent<T>());
         }
 
         public void RemoveAllComponents()

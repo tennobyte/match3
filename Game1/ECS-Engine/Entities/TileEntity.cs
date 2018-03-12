@@ -8,7 +8,7 @@ namespace ECS_Engine
             : base(id)
         {
             AddComponents(new Transform(position),
-                        new SpriteRenderer(ContentHolder.boardTile, ContentHolder.boardTile.Width / 2, 8, 8, 0.5f));
+                        new SpriteRenderer(ContentHolder.BoardTile, ContentHolder.BoardTile.Width / 2, 8, 8, 0.5f));
         }
     }
 }

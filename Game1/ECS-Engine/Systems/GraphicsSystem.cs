@@ -1,10 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ECS_Engine
 {
@@ -18,7 +14,8 @@ namespace ECS_Engine
 
         public override void Draw (SpriteBatch spriteBatch)
         {
-            foreach (Entity go in Scene.Entities.Where(e => e.HasComponents(CompatibleTypes)))
+            var compatibleEntities = Scene.Entities.Where(e => e.HasComponents(CompatibleTypes));
+            foreach (Entity go in compatibleEntities)
             {
                 if (go.IsActive)
                 {
@@ -27,7 +24,8 @@ namespace ECS_Engine
                     Vector2 anchor = new Vector2(sprite.Texture.Width / 2, sprite.Texture.Height / 2);
                     if (!sprite.IsTilable)
                     {
-                        spriteBatch.Draw(sprite.Texture, transform.Position, null, new Color(255, 255, 255, MathHelper.Clamp(sprite.AlphaValue, 0, 255)),
+                        spriteBatch.Draw(sprite.Texture, transform.Position, null, 
+                            new Color(255, 255, 255, MathHelper.Clamp(sprite.AlphaValue, 0, 255)),
                             transform.Rotation, anchor, transform.Scale, sprite.SpriteEffects, sprite.LayerDepth);
                     }
                     else
@@ -37,8 +35,10 @@ namespace ECS_Engine
                             for (int j = 0; j < sprite.HorizontalRepeat; j++)
                             {
                                 int spacing = sprite.Spacing;
-                                Vector2 newPosition = new Vector2(transform.Position.X + spacing * i, transform.Position.Y + spacing * j);
-                                spriteBatch.Draw(sprite.Texture, newPosition, null, new Color(255,255,255, MathHelper.Clamp(sprite.AlphaValue,0,255)),
+                                Vector2 newPosition = new Vector2(transform.Position.X + spacing * i, 
+                                    transform.Position.Y + spacing * j);
+                                spriteBatch.Draw(sprite.Texture, newPosition, null, 
+                                    new Color(255,255,255, MathHelper.Clamp(sprite.AlphaValue,0,255)),
                                     transform.Rotation, anchor, transform.Scale, sprite.SpriteEffects, sprite.LayerDepth);
                             }
                         }

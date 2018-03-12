@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ECS_Engine;
+using System.Resources;
 
 namespace Game1
 {

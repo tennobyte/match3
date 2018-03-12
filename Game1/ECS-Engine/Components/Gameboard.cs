@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ECS_Engine
+﻿namespace ECS_Engine
 {
     class Gameboard : Component
     {
-        public readonly int verticalElementsCount = 8;
-        public readonly int horizontalElementsCount  = 8;
-        public readonly int spacing = 128;
+        public int VerticalElementsCount { get; private set; } = 8;
+        public int HorizontalElementsCount { get; private set; } = 8;
+        public int Spacing { get; private set; } = 128;
 
         public Gameboard()
         {
@@ -19,15 +13,15 @@ namespace ECS_Engine
 
         public Gameboard(int vCount, int hCount)
         {
-            verticalElementsCount = vCount;
-            horizontalElementsCount = hCount;
+            VerticalElementsCount = vCount;
+            HorizontalElementsCount = hCount;
         }
 
         public Gameboard(int vCount, int hCount, int spacingValue)
         {
-            verticalElementsCount = vCount;
-            horizontalElementsCount = hCount;
-            spacing = spacingValue;
+            VerticalElementsCount = vCount;
+            HorizontalElementsCount = hCount;
+            Spacing = spacingValue;
         }
     }
 }

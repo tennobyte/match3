@@ -5,9 +5,8 @@ using System.Collections.Generic;
 
 namespace ECS_Engine
 {
-    public abstract class System: ISystem
+    public abstract class System
     {
-        //public List<Entity> CompatibleEntities { get; set; }
         protected List<Type> CompatibleTypes { get; private set; }
         public Scene Scene { get; set; }
 

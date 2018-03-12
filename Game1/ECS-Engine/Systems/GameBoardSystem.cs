@@ -1,11 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ECS_Engine
 {
@@ -48,9 +44,9 @@ namespace ECS_Engine
         {
             gameboardEntity = Scene.Entities.FirstOrDefault(e => e.HasExactComponents(CompatibleTypes));
 
-            verticalElementsCount = gameboardEntity.GetComponent<Gameboard>().verticalElementsCount;
-            horizontalElementsCount = gameboardEntity.GetComponent<Gameboard>().horizontalElementsCount;
-            spacing = gameboardEntity.GetComponent<Gameboard>().spacing;
+            verticalElementsCount = gameboardEntity.GetComponent<Gameboard>().VerticalElementsCount;
+            horizontalElementsCount = gameboardEntity.GetComponent<Gameboard>().HorizontalElementsCount;
+            spacing = gameboardEntity.GetComponent<Gameboard>().Spacing;
             initialPosition = gameboardEntity.GetComponent<Transform>().Position;
             gameState = GameState.CheckingMatches;
 
@@ -62,14 +58,14 @@ namespace ECS_Engine
             //initialising stuff
             GemsInitialize();
 
-            Entity gameBoardTile = EntityFactory.Create(EntityType.Tile, new Vector2(initialPosition.X, initialPosition.Y));
+            Entity gameBoardTile = new TileEntity("tile", new Vector2(initialPosition.X, initialPosition.Y));
             gameBoardTile.GetComponent<Transform>().SetScale(0.5f);
             Scene.AddEntity(gameBoardTile);
 
-            score = EntityFactory.Create(EntityType.Score, new Vector2(5, 60));
+            score = new ScoreEntity("score", new Vector2(5, 60));
             Scene.AddEntity(score);
 
-            timer = EntityFactory.Create(EntityType.Timer, new Vector2(5, 20));
+            timer = new TimerEntity("timer", new Vector2(5, 20));
             Scene.AddEntity(timer);
         }
 
@@ -97,7 +93,6 @@ namespace ECS_Engine
                     {
                         if (isSwapping && firstClickedElement != null && secondClickedElement != null)
                         {
-                            Console.WriteLine("swapping failed");
                             gameState = GameState.CheckingUnavaliable;
                             SwapElements(firstClickedElement, secondClickedElement);
                             isSwapping = false;
@@ -122,7 +117,6 @@ namespace ECS_Engine
                         if (IsNeighbours(firstClickedElement, secondClickedElement))
                         {
                             DisableColliders();
-                            Console.WriteLine("swappity swap");
                             isSwapping = true;
                             SwapElements(firstClickedElement, secondClickedElement);
                             gameState = GameState.CheckingUnavaliable;
@@ -156,7 +150,6 @@ namespace ECS_Engine
                     gameState = GameState.CheckingUnavaliable;
                     break;
             }
-            Console.WriteLine(gameState);
         }
 
         private void SwapElements(Entity element1, Entity element2)
@@ -168,10 +161,16 @@ namespace ECS_Engine
             element2.GetComponent<Animator>().SetTargetPosition(element1.GetComponent<Transform>().Position);
             element2.GetComponent<Animator>().ToggleMoving();
 
-            element1.GetComponent<GameboardElement>().BoardPosition = element2.GetComponent<GameboardElement>().BoardPosition;
-            gems[element1.GetComponent<GameboardElement>().BoardPosition.X, element1.GetComponent<GameboardElement>().BoardPosition.Y] = element1;
+            element1.GetComponent<GameboardElement>().BoardPosition = 
+                element2.GetComponent<GameboardElement>().BoardPosition;
+
+            gems[element1.GetComponent<GameboardElement>().BoardPosition.X, 
+                element1.GetComponent<GameboardElement>().BoardPosition.Y] = element1;
+
             element2.GetComponent<GameboardElement>().BoardPosition = tempBoardPosition;
-            gems[element2.GetComponent<GameboardElement>().BoardPosition.X, element2.GetComponent<GameboardElement>().BoardPosition.Y] = element2;
+
+            gems[element2.GetComponent<GameboardElement>().BoardPosition.X, 
+                element2.GetComponent<GameboardElement>().BoardPosition.Y] = element2;
         }
 
         private void EnableColliders()
@@ -198,17 +197,19 @@ namespace ECS_Engine
 
         private void ShowGameOver()
         {
-            Vector2 position = new Vector2(Game1.Game1.graphics.PreferredBackBufferWidth / 2, Game1.Game1.graphics.PreferredBackBufferHeight / 2);
-            var background = EntityFactory.Create(EntityType.Background, position);
-            var button = EntityFactory.Create(EntityType.Button, position);
+            var graphics = Game1.Game1.graphics;
+            Vector2 position = new Vector2(graphics.PreferredBackBufferWidth / 2, 
+                graphics.PreferredBackBufferHeight / 2);
+            var background = new BackgroundEntity("background", position);
+            var button = new ButtonEntity("okbutton", position);
             button.GetComponent<Transform>().Move(new Vector2(0, 40));
             button.GetComponent<Button>().SceneToOpen = SceneType.Menu;
-            button.GetComponent<SpriteRenderer>().Texture = ContentHolder.okButton;
+            button.GetComponent<SpriteRenderer>().Texture = ContentHolder.OkButton;
             var collider = button.GetComponent<Collider>();
             collider.IsActive = true;
-            collider.Rectangle = new Rectangle(position.ToPoint().X - ContentHolder.okButton.Width / 2,
-                                                position.ToPoint().Y - ContentHolder.okButton.Width / 2,
-                                                ContentHolder.okButton.Width, ContentHolder.okButton.Height);
+            collider.Rectangle = new Rectangle(position.ToPoint().X - ContentHolder.OkButton.Width / 2,
+                                                position.ToPoint().Y - ContentHolder.OkButton.Width / 2,
+                                                ContentHolder.OkButton.Width, ContentHolder.OkButton.Height);
             Scene.AddEntity(background);
             Scene.AddEntity(button);
         }
@@ -218,10 +219,9 @@ namespace ECS_Engine
             var firstPosition = firstElement.GetComponent<GameboardElement>().BoardPosition;
             var secondPosition = secondElement.GetComponent<GameboardElement>().BoardPosition;
             var diffirence = firstPosition - secondPosition;
-            Console.WriteLine(diffirence);
-            if ((Math.Abs(diffirence.X) == 0 && Math.Abs(diffirence.Y) == 1) || (Math.Abs(diffirence.X) == 1 && Math.Abs(diffirence.Y) == 0))
+            if ((Math.Abs(diffirence.X) == 0 && Math.Abs(diffirence.Y) == 1) || 
+                (Math.Abs(diffirence.X) == 1 && Math.Abs(diffirence.Y) == 0))
             {
-                Console.WriteLine("is neighbours");
                 return true;
             }
             return false;
@@ -333,12 +333,13 @@ namespace ECS_Engine
                 {
                     var elementComponent = element.GetComponent<GameboardElement>();
                     elementComponent.BoardPosition = new Point(i, offsetCounter);
-                    element.GetComponent<Transform>().SetPosition(new Vector2((int)initialPosition.X + i * spacing/2,
-                                                            (int)initialPosition.Y  - (columnToRespawn.Count - offsetCounter ) * spacing/2));
+                    element.GetComponent<Transform>().SetPosition(new Vector2((int)initialPosition.X + i * spacing/2, 
+                        (int)initialPosition.Y  - (columnToRespawn.Count - offsetCounter ) * spacing/2));
                     var animatorComponent = element.GetComponent<Animator>();
                     animatorComponent.ToggleMoving();
-                    animatorComponent.SetTargetPosition(new Vector2((int)(initialPosition.X + elementComponent.BoardPosition.X * spacing/2),
-                                                        (int)initialPosition.Y  + elementComponent.BoardPosition.Y * spacing/2));
+                    var xPos = (int)(initialPosition.X + elementComponent.BoardPosition.X * spacing / 2);
+                    var yPos = (int)(initialPosition.Y + elementComponent.BoardPosition.Y * spacing / 2);
+                    animatorComponent.SetTargetPosition(new Vector2(xPos, yPos));
                     ChangeGemTypeRandomly(element);
                     gems[elementComponent.BoardPosition.X, elementComponent.BoardPosition.Y] = element;
                     offsetCounter++;
@@ -363,7 +364,7 @@ namespace ECS_Engine
             SpriteRenderer spriteRenderer = gem.GetComponent<SpriteRenderer>();
             int gemsSize = Enum.GetNames(typeof(Gem)).Length;
             gameboardElement.GemType = (Gem) random.Next(0, gemsSize);
-            spriteRenderer.Texture = ContentHolder.gemTextures[gameboardElement.GemType];
+            spriteRenderer.Texture = ContentHolder.GemTextures[gameboardElement.GemType];
         }
 
         private List<Entity> FindAllMatchingElements()
@@ -423,14 +424,19 @@ namespace ECS_Engine
             {
                 for (int x = 0; x < horizontalElementsCount; x++)
                 {
-                    Entity element = EntityFactory.Create(EntityType.Element, new Vector2((int)initialPosition.X + x * spacing / 2,
-                                                                                (int)initialPosition.Y + y * spacing / 2));
+                    Entity element = new ElementEntity("gem"+y+x, 
+                        new Vector2((int)initialPosition.X + x * spacing / 2, 
+                        (int)initialPosition.Y + y * spacing / 2));
                     element.GetComponent<Transform>().SetScale(0.4f);
                     element.GetComponent<GameboardElement>().BoardPosition = new Point(x, y);
                     ChangeGemTypeRandomly(element);
-                    element.GetComponent<Collider>().Rectangle = new Rectangle((int)(initialPosition.X + x * spacing / 2 - element.GetComponent<SpriteRenderer>().Texture.Width / 2 * element.GetComponent<Transform>().Scale),
-                                                                            (int)(initialPosition.Y + y * spacing / 2 - element.GetComponent<SpriteRenderer>().Texture.Height / 2 * element.GetComponent<Transform>().Scale),
-                                                                             spacing / 2, spacing / 2);
+                    var xPos = (int)(initialPosition.X + x * spacing 
+                        / 2 - element.GetComponent<SpriteRenderer>().Texture.Width 
+                        / 2 * element.GetComponent<Transform>().Scale);
+                    var yPos = (int)(initialPosition.Y + y * spacing 
+                        / 2 - element.GetComponent<SpriteRenderer>().Texture.Height 
+                        / 2 * element.GetComponent<Transform>().Scale);
+                    element.GetComponent<Collider>().Rectangle = new Rectangle(xPos, yPos, spacing / 2, spacing / 2);
                     Scene.AddEntity(element);
                     gameboardEntity.AddChild(element);
                     gems[x, y] = element;

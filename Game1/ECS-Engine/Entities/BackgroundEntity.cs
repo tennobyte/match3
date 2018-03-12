@@ -8,7 +8,7 @@ namespace ECS_Engine
             : base(id)
         {
             AddComponents(new Transform(position),
-                        new SpriteRenderer(ContentHolder.gameOverBackground,0.3f));
+                        new SpriteRenderer(ContentHolder.GameOverBackground,0.3f));
         }
     }
 }

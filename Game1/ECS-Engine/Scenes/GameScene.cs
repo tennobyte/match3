@@ -7,14 +7,15 @@ namespace ECS_Engine
         public GameScene() 
             : base ("game")
         {
-            AddEntity(EntityFactory.Create(EntityType.Gameboard, new Vector2(128, 32)));
+            AddEntity(new GameboardEntity("gameboard", new Vector2(128, 32)));
             AddSystem(new TimerSystem());
-            AddSystem(new ScoreSystem());
             AddSystem(new GameboardSystem());
             AddSystem(new AnimationSystem());
             AddSystem(new ControlSystem());
             AddSystem(new GraphicsSystem());
             AddSystem(new ButtonSystem());
+            AddSystem(new TextSystem());
+            AddSystem(new ScoreSystem());
         }
     }
 }

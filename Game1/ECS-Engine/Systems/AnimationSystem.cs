@@ -1,9 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ECS_Engine
 {
@@ -17,7 +13,8 @@ namespace ECS_Engine
 
         public override void Update(GameTime gameTime)
         {
-            foreach(Entity go in Scene.Entities.Where(e => e.HasComponents(CompatibleTypes)))
+            var compatibleEntities = Scene.Entities.Where(e => e.HasComponents(CompatibleTypes));
+            foreach (Entity go in compatibleEntities)
             {
                 if (go.IsActive)
                 {
@@ -28,13 +25,14 @@ namespace ECS_Engine
                     if (animator.IsMoving)
                     {
                         Vector2 moveDirection = animator.TargetPosition - transform.Position;
-                        //Console.WriteLine(moveDirection);
                         if (moveDirection.Length() <= animator.MoveSpeed/100 + 1)
                         {
                             animator.ToggleMoving();
                             transform.SetPosition(animator.TargetPosition);
-                            collider.RefreshPosition((int)(transform.Position.X - spriteRenderer.Texture.Width/2 * transform.Scale),
-                                (int)(transform.Position.Y - spriteRenderer.Texture.Height / 2 * transform.Scale));
+                            collider.RefreshPosition((int)(transform.Position.X 
+                                - spriteRenderer.Texture.Width/2 * transform.Scale),
+                                (int)(transform.Position.Y 
+                                - spriteRenderer.Texture.Height / 2 * transform.Scale));
                         }
                         else
                         {
@@ -50,7 +48,6 @@ namespace ECS_Engine
                         if (spriteRenderer.AlphaValue < 1)
                         {
                             animator.ToggleFading();
-                            //spriteRenderer.ResetAlpha();
                         }
                     }
 
